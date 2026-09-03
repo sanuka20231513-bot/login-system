@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - MyApp</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="card">
+  <h1 class="title">MyApp</h1>
+  <h2 class="subtitle">Welcome, {{ name }}!</h2>
+  <p class="note">You are logged in as <strong>{{ username }}</strong>.</p>
+  <div class="links">
+    <a href="{{ url_for('logout') }}">Logout</a>
+  </div>
+</div>
+</body>
+</html>
