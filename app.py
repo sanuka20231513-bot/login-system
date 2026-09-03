@@ -77,6 +77,42 @@ def update_user_password(username, new_password):
             u["password"] = new_password
     write_users(users)
 
+# Flask routes: Login, Register, Dashboard,Logout
+@app.route("/", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
+
+# basic empty-field validation (server-side, in addition to the
+        if not username or not password:
+            flash("Please enter both username and password.", "error")
+            return render_template("login.html")
+
+        user = find_user(username)
+        if not user or user["password"] != password:
+            flash("Incorrect username or password.", "error")
+            return render_template("login.html")
+
+        if user["status"] == "Pending":
+            flash("Your account is waiting for administrator approval.", "error")
+            return render_template("login.html")
+
+        if user["status"] == "Rejected":
+            flash("Your account request was rejected. Please contact the administrator.", "error")
+            return render_template("login.html")
+
+        if user["status"] == "Disabled":
+            flash("Your account has been disabled. Please contact the administrator.", "error")
+            return render_template("login.html")
+
+        # status == "Approved" -> success
+        session["username"] = user["username"]
+        session["name"] = user["name"]
+        return redirect(url_for("dashboard"))
+
+    return render_template("login.html")
+
 def remove_user(username):
     users = [u for u in read_users() if u["username"].lower() != username.lower()]
     write_users(users)
