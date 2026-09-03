@@ -11,6 +11,13 @@
   <h1 class="title">MyApp</h1>
   <h2 class="subtitle">Login to your account</h2>
 
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
 
   <form method="POST" data-validate novalidate>
     <label for="username">Username</label>
