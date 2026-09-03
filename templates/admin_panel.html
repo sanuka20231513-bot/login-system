@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - MyApp</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="card wide">
+  <div class="panel-header">
+    <h1 class="title">Admin Panel</h1>
+    <a class="logout-link" href="{{ url_for('admin_logout') }}">Logout</a>
+  </div>
+
+<section>
+    <h2 class="section-title">Pending Users ({{ pending|length }})</h2>
+    {% if pending %}
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Username</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for u in pending %}
+        <tr>
+          <td>{{ u.name }}</td>
+          <td>{{ u.username }}</td>
+          <td class="actions">
+            <form method="POST" action="{{ url_for('admin_approve', username=u.username) }}">
+              <button type="submit" class="btn small approve">Approve</button>
+            </form>
+            <form method="POST" action="{{ url_for('admin_reject', username=u.username) }}">
+              <button type="submit" class="btn small reject">Reject</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="empty">No pending users.</p>
+    {% endif %}
+  </section>
+
+  <section>
+    <h2 class="section-title">Approved Users ({{ approved|length }})</h2>
+    {% if approved %}
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Username</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for u in approved %}
+        <tr>
+          <td>{{ u.name }}</td>
+          <td>{{ u.username }}</td>
+          <td class="actions">
+            <form method="POST" action="{{ url_for('admin_disable', username=u.username) }}">
+              <button type="submit" class="btn small reject">Disable</button>
+            </form>
+            <form method="POST" action="{{ url_for('admin_remove', username=u.username) }}" onsubmit="return confirm('Permanently remove this user?');">
+              <button type="submit" class="btn small remove">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="empty">No approved users.</p>
+    {% endif %}
+  </section>
+
+    <section>
+    <h2 class="section-title">Rejected / Disabled Users ({{ others|length }})</h2>
+    {% if others %}
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Username</th><th>Status</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for u in others %}
+        <tr>
+          <td>{{ u.name }}</td>
+          <td>{{ u.username }}</td>
+          <td><span class="status-badge {{ u.status|lower }}">{{ u.status }}</span></td>
+          <td class="actions">
+            <form method="POST" action="{{ url_for('admin_approve', username=u.username) }}">
+              <button type="submit" class="btn small approve">Approve</button>
+            </form>
+            <form method="POST" action="{{ url_for('admin_remove', username=u.username) }}" onsubmit="return confirm('Permanently remove this user?');">
+              <button type="submit" class="btn small remove">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="empty">No rejected or disabled users.</p>
+    {% endif %}
+  </section>
+</div>
+</body>
+</html>
+
