@@ -169,3 +169,116 @@ input[type="password"]:focus {
 .admin-link a:hover {
   color: #6b7280;
 }
+
+
+/*Admin slide css*/
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.panel-header .title {
+  text-align: left;
+  margin: 0;
+}
+
+.logout-link {
+  font-size: 13px;
+  color: #4f6ef7;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+section {
+  margin-bottom: 28px;
+}
+
+.section-title {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #2d3348;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th, td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eef0f4;
+}
+
+th {
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actions form {
+  margin: 0;
+}
+
+.btn.small {
+  width: auto;
+  padding: 6px 14px;
+  font-size: 13px;
+}
+.btn.approve {
+  background: #12b76a;
+}
+
+.btn.approve:hover {
+  background: #0e9a58;
+}
+
+.btn.reject {
+  background: #f04438;
+}
+
+.btn.reject:hover {
+  background: #d92d20;
+}
+
+.btn.remove {
+  background: #6b7280;
+}
+
+.btn.remove:hover {
+  background: #4b5563;
+}
+
+.empty {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.rejected {
+  background: #fef2f2;
+  color: #b42318;
+}
+
+.status-badge.disabled {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
