@@ -110,3 +110,31 @@ input[type="password"]:focus {
   background: #3f5ce0;
 }
 
+  
+.field-error {
+  color: #d92d20;
+  font-size: 13px;
+  min-height: 4px;
+  margin: -8px 0 12px;
+}
+
+.alert {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.alert.error {
+  background: #fef2f2;
+  color: #b42318;
+  border: 1px solid #fecdca;
+}
+
+.alert.success {
+  background: #ecfdf3;
+  color: #027a48;
+  border: 1px solid #abefc6;
+}
+
