@@ -92,3 +92,20 @@ input[type="password"]:focus {
   user-select: none;
 }
 
+.btn {
+  width: 100%;
+  padding: 11px;
+  background: #4f6ef7;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn:hover {
+  background: #3f5ce0;
+}
+
