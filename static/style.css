@@ -138,3 +138,34 @@ input[type="password"]:focus {
   border: 1px solid #abefc6;
 }
 
+
+.links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 18px;
+  font-size: 13px;
+}
+
+.links a {
+  color: #4f6ef7;
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+.admin-link {
+  text-align: center;
+  margin-top: 14px;
+}
+
+.admin-link a {
+  font-size: 12px;
+  color: #9ca3af;
+  text-decoration: none;
+}
+
+.admin-link a:hover {
+  color: #6b7280;
+}
