@@ -26,14 +26,16 @@
     {% if pending %}
     <table>
       <thead>
-        <tr><th>Name</th><th>Username</th><th>Actions</th></tr>
+        <tr><th>Name</th><th>Username</th><th>Email</th><th>Actions</th></tr>
       </thead>
       <tbody>
         {% for u in pending %}
         <tr>
           <td>{{ u.name }}</td>
           <td>{{ u.username }}</td>
+          <td>{{ u.email or '-' }}</td>
           <td class="actions">
+            <a href="{{ url_for('admin_edit', username=u.username) }}" class="btn small edit">Edit</a>
             <form method="POST" action="{{ url_for('admin_approve', username=u.username) }}">
               <button type="submit" class="btn small approve">Approve</button>
             </form>
@@ -55,14 +57,16 @@
     {% if approved %}
     <table>
       <thead>
-        <tr><th>Name</th><th>Username</th><th>Actions</th></tr>
+        <tr><th>Name</th><th>Username</th><th>Email</th><th>Actions</th></tr>
       </thead>
       <tbody>
         {% for u in approved %}
         <tr>
           <td>{{ u.name }}</td>
           <td>{{ u.username }}</td>
+          <td>{{ u.email or '-' }}</td>
           <td class="actions">
+            <a href="{{ url_for('admin_edit', username=u.username) }}" class="btn small edit">Edit</a>
             <form method="POST" action="{{ url_for('admin_disable', username=u.username) }}">
               <button type="submit" class="btn small reject">Disable</button>
             </form>
@@ -84,15 +88,17 @@
     {% if others %}
     <table>
       <thead>
-        <tr><th>Name</th><th>Username</th><th>Status</th><th>Actions</th></tr>
+        <tr><th>Name</th><th>Username</th><th>Email</th><th>Status</th><th>Actions</th></tr>
       </thead>
       <tbody>
         {% for u in others %}
         <tr>
           <td>{{ u.name }}</td>
           <td>{{ u.username }}</td>
+          <td>{{ u.email or '-' }}</td>
           <td><span class="status-badge {{ u.status|lower }}">{{ u.status }}</span></td>
           <td class="actions">
+            <a href="{{ url_for('admin_edit', username=u.username) }}" class="btn small edit">Edit</a>
             <form method="POST" action="{{ url_for('admin_approve', username=u.username) }}">
               <button type="submit" class="btn small approve">Approve</button>
             </form>
@@ -111,4 +117,3 @@
 </div>
 </body>
 </html>
-
