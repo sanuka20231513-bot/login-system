@@ -6,3 +6,40 @@
 <title>Edit User - MyApp Admin</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+<body>
+<div class="card">
+  <h1 class="title">MyApp Admin</h1>
+  <h2 class="subtitle">Edit User Details</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" data-validate novalidate>
+    <label for="name">Full Name</label>
+    <input type="text" id="name" name="name" value="{{ user.name }}" required>
+
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" value="{{ user.username }}" required>
+
+    <label for="email">Email</label>
+    <input type="text" id="email" name="email" value="{{ user.email or '' }}" placeholder="user@example.com">
+
+    <p class="note">Status: <strong>{{ user.status }}</strong> &mdash; change status from the Admin Panel buttons.</p>
+
+    <div class="field-error"></div>
+
+    <button type="submit" class="btn">Save Changes</button>
+  </form>
+
+  <div class="links">
+    <a href="{{ url_for('admin_panel') }}">&larr; Back to Admin Panel</a>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
