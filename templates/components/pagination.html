@@ -1,0 +1,32 @@
+{% if pagination.total_pages > 1 %}
+<nav class="pagination" aria-label="Pagination">
+  <p class="pagination-summary">Showing {{ pagination.start }}&ndash;{{ pagination.end }} of {{ pagination.total }}</p>
+  <ul class="pagination-list">
+    <li>
+      {% if pagination.has_prev %}
+        <a class="page-btn" href="{{ url_for(request.endpoint, **dict(request.args.to_dict(), page=pagination.prev_page)) }}">&larr; Previous</a>
+      {% else %}
+        <span class="page-btn disabled">&larr; Previous</span>
+      {% endif %}
+    </li>
+    {% for p in pagination.page_numbers %}
+      <li>
+        {% if p is none %}
+          <span class="page-btn ellipsis">&hellip;</span>
+        {% elif p == pagination.page %}
+          <span class="page-btn current">{{ p }}</span>
+        {% else %}
+          <a class="page-btn" href="{{ url_for(request.endpoint, **dict(request.args.to_dict(), page=p)) }}">{{ p }}</a>
+        {% endif %}
+      </li>
+    {% endfor %}
+    <li>
+      {% if pagination.has_next %}
+        <a class="page-btn" href="{{ url_for(request.endpoint, **dict(request.args.to_dict(), page=pagination.next_page)) }}">Next &rarr;</a>
+      {% else %}
+        <span class="page-btn disabled">Next &rarr;</span>
+      {% endif %}
+    </li>
+  </ul>
+</nav>
+{% endif %}

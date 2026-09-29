@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Management - MyApp Admin</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% include "components/navbar.html" %}
+<div class="page-wrap">
+<div class="card wide">
+  <div class="panel-header">
+    <h1 class="title">User Management</h1>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="GET" class="filter-bar">
+    <input type="text" name="search" placeholder="Search name or username" value="{{ search }}">
+    <select name="status">
+      <option value="">All statuses</option>
+      <option value="Pending" {% if status == 'Pending' %}selected{% endif %}>Pending</option>
+      <option value="Approved" {% if status == 'Approved' %}selected{% endif %}>Approved</option>
+      <option value="Rejected" {% if status == 'Rejected' %}selected{% endif %}>Rejected</option>
+      <option value="Disabled" {% if status == 'Disabled' %}selected{% endif %}>Disabled</option>
+    </select>
+    <select name="role">
+      <option value="">All roles</option>
+      <option value="user" {% if role == 'user' %}selected{% endif %}>User</option>
+      <option value="admin" {% if role == 'admin' %}selected{% endif %}>Admin</option>
+    </select>
+    <button type="submit" class="btn small">Search</button>
+    {% if search or status or role %}
+      <a href="{{ url_for('admin.users_list') }}" class="btn small remove">Clear</a>
+    {% endif %}
+  </form>
+
+  <div class="table-scroll">
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.name }}</td>
+        <td>{{ u.username }}</td>
+        <td>{{ u.email or '-' }}</td>
+        <td><span class="role-badge {{ u.role }}">{{ u.role }}</span></td>
+        <td><span class="status-badge {{ u.status|lower }}">{{ u.status }}</span></td>
+        <td class="actions">
+          <a href="{{ url_for('admin.edit_user', user_id=u.id) }}" class="btn small edit">Edit</a>
+          {% if u.status == 'Pending' %}
+            <form method="POST" action="{{ url_for('admin.approve_user', user_id=u.id) }}">
+              <button type="submit" class="btn small approve">Approve</button>
+            </form>
+            <form method="POST" action="{{ url_for('admin.reject_user', user_id=u.id) }}">
+              <button type="submit" class="btn small reject">Reject</button>
+            </form>
+          {% elif u.status == 'Approved' %}
+            <form method="POST" action="{{ url_for('admin.disable_user', user_id=u.id) }}">
+              <button type="submit" class="btn small reject">Disable</button>
+            </form>
+          {% else %}
+            <form method="POST" action="{{ url_for('admin.enable_user', user_id=u.id) }}">
+              <button type="submit" class="btn small approve">Enable</button>
+            </form>
+          {% endif %}
+          <form method="POST" action="{{ url_for('admin.remove_user', user_id=u.id) }}" onsubmit="return confirm('Permanently delete this user?');">
+            <button type="submit" class="btn small remove">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="empty">No users match your filters.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  {% include "components/pagination.html" %}
+</div>
+</div>
+</body>
+</html>

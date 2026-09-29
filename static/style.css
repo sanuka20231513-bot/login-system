@@ -1,0 +1,501 @@
+/* login system css */
+
+* {
+  box-sizing: border-box;
+}
+
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f2f4f8;
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #1f2430;
+}
+
+/* Public pages (login/register/forgot/reset/error pages) center their
+   card in the full viewport, with no navbar. */
+.center-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* Pages behind the navbar (dashboard/profile/admin) just flow down from
+   the top instead of vertically centering. */
+.page-wrap {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 12px;
+  padding: 32px 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+.card.wide {
+  max-width: 780px;
+}
+.title {
+  margin: 0 0 4px;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  color: #2d3348;
+}
+
+.subtitle {
+  margin: 0 0 20px;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  color: #6b7280;
+}
+.note {
+  font-size: 13px;
+  color: #6b7280;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #374151;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+input[type="text"]:focus,
+input[type="password"]:focus {
+  border-color: #4f6ef7;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 56px;
+}
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4f6ef7;
+  cursor: pointer;
+  user-select: none;
+}
+.btn {
+  width: 100%;
+  padding: 11px;
+  background: #4f6ef7;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn:hover {
+  background: #3f5ce0;
+}
+
+.field-error {
+  color: #d92d20;
+  font-size: 13px;
+  min-height: 4px;
+  margin: -8px 0 12px;
+}
+
+.alert {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.alert.error {
+  background: #fef2f2;
+  color: #b42318;
+  border: 1px solid #fecdca;
+}
+
+.alert.success {
+  background: #ecfdf3;
+  color: #027a48;
+  border: 1px solid #abefc6;
+}
+
+.links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 18px;
+  font-size: 13px;
+}
+
+.links a {
+  color: #4f6ef7;
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+/* Navbar (shown on dashboard/profile/admin pages) */
+
+.navbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 18px;
+  color: #2d3348;
+  text-decoration: none;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.navbar-links a {
+  color: #4f6ef7;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.navbar-links a:hover {
+  text-decoration: underline;
+}
+
+/*Admin slide css*/
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.panel-header .title {
+  text-align: left;
+  margin: 0;
+}
+
+.logout-link {
+  font-size: 13px;
+  color: #4f6ef7;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+section {
+  margin-bottom: 28px;
+}
+
+.section-title {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #2d3348;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th, td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eef0f4;
+}
+
+th {
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actions form {
+  margin: 0;
+}
+
+.btn.small {
+  width: auto;
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+a.btn.small {
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+}
+
+.btn.edit {
+  background: #6366f1;
+}
+
+.btn.edit:hover {
+  background: #4f46e5;
+}
+
+.btn.approve {
+  background: #12b76a;
+}
+
+.btn.approve:hover {
+  background: #0e9a58;
+}
+
+.btn.reject {
+  background: #f04438;
+}
+
+.btn.reject:hover {
+  background: #d92d20;
+}
+
+.btn.remove {
+  background: #6b7280;
+}
+
+.btn.remove:hover {
+  background: #4b5563;
+}
+
+.empty {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.rejected {
+  background: #fef2f2;
+  color: #b42318;
+}
+
+.status-badge.disabled {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.status-badge.pending {
+  background: #fffaeb;
+  color: #b54708;
+}
+
+.status-badge.approved {
+  background: #ecfdf3;
+  color: #027a48;
+}
+
+/* Role badges */
+
+.role-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.role-badge.admin {
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.role-badge.user {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* Select dropdowns (role picker, status/role filters) */
+
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  background: #fff;
+}
+
+input:disabled {
+  background: #f3f4f6;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+/* Search + status/role filter bar on User Management */
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filter-bar input[type="text"] {
+  width: auto;
+  flex: 1;
+  min-width: 180px;
+  margin-bottom: 0;
+}
+
+.filter-bar select {
+  width: auto;
+  margin-bottom: 0;
+}
+
+.filter-bar .btn.small {
+  margin-bottom: 0;
+}
+
+/* Table can scroll horizontally on small screens instead of squashing */
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+/* Admin dashboard stat cards */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.stat-card {
+  background: #f8f9fb;
+  border: 1px solid #eef0f4;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 28px;
+  font-weight: 700;
+  color: #2d3348;
+}
+
+.stat-label {
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+/* Pagination controls */
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination-summary {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.pagination-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+  justify-content: center;
+}
+
+.page-btn {
+  display: inline-block;
+  min-width: 36px;
+  text-align: center;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  text-decoration: none;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.page-btn:hover {
+  background: #f3f4f6;
+}
+
+.page-btn.current {
+  background: #4f6ef7;
+  color: #fff;
+  border-color: #4f6ef7;
+  font-weight: 600;
+}
+
+.page-btn.disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.page-btn.ellipsis {
+  border: none;
+}

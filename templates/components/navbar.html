@@ -1,0 +1,12 @@
+<nav class="navbar">
+  <a class="navbar-brand" href="{{ url_for('user.dashboard') }}">MyApp</a>
+  <div class="navbar-links">
+    <a href="{{ url_for('user.dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('user.profile') }}">Profile</a>
+    {% if current_user and current_user.role == 'admin' %}
+      <a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
+      <a href="{{ url_for('admin.users_list') }}">User Management</a>
+    {% endif %}
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
+  </div>
+</nav>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - MyApp</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% include "components/navbar.html" %}
+<div class="page-wrap">
+<div class="card">
+  <h1 class="title">MyApp</h1>
+  <h2 class="subtitle">Welcome, {{ user.name }}!</h2>
+  <p class="note">You are logged in as <strong>{{ user.username }}</strong>{% if user.email %} ({{ user.email }}){% endif %}.</p>
+  <p class="note">Role: <span class="role-badge {{ user.role }}">{{ user.role }}</span></p>
+</div>
+</div>
+</body>
+</html>

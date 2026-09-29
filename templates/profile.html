@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile - MyApp</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% include "components/navbar.html" %}
+<div class="page-wrap">
+<div class="card">
+  <h1 class="title">MyApp</h1>
+  <h2 class="subtitle">My Profile</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" data-validate novalidate>
+    <label for="name">Full Name</label>
+    <input type="text" id="name" name="name" value="{{ user.name }}" required>
+
+    <label>Username</label>
+    <input type="text" value="{{ user.username }}" disabled>
+
+    <label for="email">Email</label>
+    <input type="text" id="email" name="email" value="{{ user.email or '' }}" placeholder="user@example.com">
+
+    <label>Role</label>
+    <input type="text" value="{{ user.role }}" disabled>
+
+    <div class="field-error"></div>
+
+    <button type="submit" class="btn">Save Changes</button>
+  </form>
+
+  <p class="note">Need a new password? Use <a href="{{ url_for('auth.forgot_password') }}">Forgot Password</a>.</p>
+</div>
+</div>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
