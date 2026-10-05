@@ -1,11 +1,3 @@
-"""
-Authentication / authorization helpers.
-========================================
-get_current_user() re-reads the user from the database on every single
-request instead of trusting the session blindly. That's what makes an
-admin's changes (disabling someone, changing a role) take effect on that
-user's very next request - not just the next time they happen to log in.
-"""
 
 from functools import wraps
 from flask import session, redirect, url_for, flash, abort
