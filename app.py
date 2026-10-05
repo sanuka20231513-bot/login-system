@@ -1,26 +1,3 @@
-"""
-Login System with Role-Based Access Control (RBAC) and Pagination
-====================================================================
-Storage: SQLite (users.db). Passwords are hashed with Werkzeug.
-
-Roles:  user, admin  (see utils/auth.py: role_required)
-Pagination: utils/pagination.py, used by /admin/users (see routes/admin.py)
-
-See README.md for the full explanation of both features and a testing
-checklist.
-
-HOW TO RUN
-----------
-    pip install -r requirements.txt
-    python app.py
-
-Then open http://127.0.0.1:5000/
-
-Default admin account (created automatically, password hashed in the DB):
-    username: admin
-    password: admin123
-"""
-
 from flask import Flask, render_template
 
 from utils.db import init_db
