@@ -1,13 +1,3 @@
-"""
-Database access layer (SQLite).
-================================
-Every function here opens its own short-lived connection, runs one or two
-statements, and closes it again - simple and safe for a small app with no
-concurrent write load.
-
-All queries use "?" placeholders (parameterized queries) so user input is
-never concatenated into SQL text - this is what prevents SQL injection.
-"""
 
 import os
 import sqlite3
