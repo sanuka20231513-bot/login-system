@@ -1,12 +1,3 @@
-"""
-Admin-only routes: dashboard, user management (search/filter/paginate),
-edit, approve, reject, disable, enable, delete.
-
-Every single route below is wrapped in @role_required("admin"). There is
-no route in this file that a "user"-role account can reach - typing the
-URL directly gets a 403, not just a hidden button.
-"""
-
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 from utils.auth import role_required
