@@ -1,11 +1,3 @@
-"""
-Backend pagination helper.
-==========================
-paginate() runs the COUNT query to find the total number of matching
-rows, then re-runs the main query with LIMIT/OFFSET appended so SQLite
-itself only returns the one page of rows that's needed - the full result
-set is never loaded into Python or sent to the browser.
-"""
 
 import math
 
