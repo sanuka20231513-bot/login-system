@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{# Layout for every logged-in page: role-aware navbar + a card.
+   Child pages fill {% block content %} and may change {% block card_class %}. #}
+{% block body %}
+{% include "components/navbar.html" %}
+<div class="page-wrap">
+<div class="card {% block card_class %}wide{% endblock %}">
+  {% include "components/flash.html" %}
+  {% block content %}{% endblock %}
+</div>
+</div>
+{% endblock %}
