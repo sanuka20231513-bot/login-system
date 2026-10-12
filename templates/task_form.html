@@ -1,0 +1,52 @@
+{% extends "app.html" %}
+{# Create / edit a task. Flags decide which extra fields show:
+   show_assignee  (manager create, admin edit)   show_status (admin edit) #}
+{% block title %}{{ heading }} - MyApp{% endblock %}
+{% block card_class %}{% endblock %}
+{% block content %}
+<h1 class="title">{{ heading }}</h1>
+<br>
+<form method="POST" data-validate novalidate>
+  {{ csrf_input() }}
+
+  <label for="title">Title</label>
+  <input type="text" id="title" name="title" value="{{ values.title }}" maxlength="150" required>
+
+  <label for="description">Description</label>
+  <textarea id="description" name="description" rows="4" maxlength="2000">{{ values.description }}</textarea>
+
+  <label for="priority">Priority</label>
+  <select id="priority" name="priority">
+    {% for p in priorities %}
+      <option value="{{ p }}" {% if values.priority == p %}selected{% endif %}>{{ p }}</option>
+    {% endfor %}
+  </select>
+
+  <label for="due_date">Due date (optional)</label>
+  <input type="date" id="due_date" name="due_date" value="{{ values.due_date or '' }}">
+
+  {% if show_assignee %}
+  <label for="assigned_to">Assign to officer</label>
+  <select id="assigned_to" name="assigned_to">
+    <option value="">Unassigned</option>
+    {% for o in officers %}
+      <option value="{{ o.id }}" {% if values.assigned_to|string == o.id|string %}selected{% endif %}>{{ o.name }} ({{ o.username }})</option>
+    {% endfor %}
+  </select>
+  {% endif %}
+
+  {% if show_status %}
+  <label for="status">Status</label>
+  <select id="status" name="status">
+    {% for s in statuses %}
+      <option value="{{ s }}" {% if values.status == s %}selected{% endif %}>{{ s }}</option>
+    {% endfor %}
+  </select>
+  {% endif %}
+
+  <div class="field-error"></div>
+  <button type="submit" class="btn">Save Task</button>
+</form>
+
+<div class="links"><a href="{{ cancel_url }}">&larr; Cancel</a></div>
+{% endblock %}
