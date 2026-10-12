@@ -1,0 +1,29 @@
+{% extends "app.html" %}
+{% block title %}Notifications - MyApp{% endblock %}
+{% block card_class %}{% endblock %}
+{% block content %}
+<div class="panel-header">
+  <h1 class="title">Notifications</h1>
+  {% if unread_notifications %}
+  <form method="POST" action="{{ url_for('user.notifications_read') }}">
+    {{ csrf_input() }}
+    <button type="submit" class="btn small edit">Mark all read</button>
+  </form>
+  {% endif %}
+</div>
+
+{% if items %}
+  <ul class="notice-list">
+    {% for n in items %}
+      <li class="{{ '' if n.is_read else 'unread' }}">
+        {% if n.link %}<a href="{{ n.link }}">{{ n.message }}</a>{% else %}{{ n.message }}{% endif %}
+        <small>{{ n.created_at[:16] }} UTC</small>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="empty">You have no notifications.</p>
+{% endif %}
+
+{% include "components/pagination.html" %}
+{% endblock %}
