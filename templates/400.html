@@ -1,0 +1,10 @@
+{% extends "public.html" %}
+{% block title %}Invalid Request - MyApp{% endblock %}
+{% block content %}
+  <h1 class="title">400</h1>
+  <h2 class="subtitle">Invalid or Expired Form</h2>
+  <p class="note">The form could not be verified (its security token was missing or has expired). Please go back, reload the page and try again.</p>
+  <div class="links" style="justify-content:center;">
+    <a href="{{ url_for('user.dashboard') }}">&larr; Back to Dashboard</a>
+  </div>
+{% endblock %}
