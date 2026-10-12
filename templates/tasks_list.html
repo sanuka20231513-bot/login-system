@@ -1,0 +1,15 @@
+{% extends "app.html" %}
+{# One page for every task list in the system. The route decides the title,
+   the mode (which buttons appear) and, via the query, which tasks. #}
+{% block title %}{{ page_title }} - MyApp{% endblock %}
+{% block content %}
+<div class="panel-header">
+  <h1 class="title">{{ page_title }}</h1>
+  {% if new_url %}<a href="{{ new_url }}" class="btn small approve">+ New Task</a>{% endif %}
+</div>
+{% if intro %}<p class="note left">{{ intro }}</p>{% endif %}
+
+{% include "components/task_filters.html" %}
+{% include "components/task_table.html" %}
+{% include "components/pagination.html" %}
+{% endblock %}
