@@ -1,0 +1,52 @@
+{% extends "app.html" %}
+{% block title %}Role Management - MyApp Admin{% endblock %}
+{% block content %}
+<h1 class="title">Role Management</h1>
+<p class="note left">Only administrators can assign or change roles. Role changes apply to a person's existing session on their very next request.</p>
+
+<div class="stats-grid">
+  {% for r in roles %}
+    <a class="stat-card" href="{{ url_for('admin.roles', role=r) }}"><span class="stat-number">{{ users_by_role.get(r, 0) }}</span><span class="stat-label">{{ r }}s</span></a>
+  {% endfor %}
+</div>
+
+<form method="GET" class="filter-bar" style="margin-top:20px;">
+  <input type="text" name="search" placeholder="Search name or username" value="{{ search }}">
+  <select name="role" title="Role">
+    <option value="">All roles</option>
+    {% for r in roles %}<option value="{{ r }}" {% if role == r %}selected{% endif %}>{{ r|capitalize }}</option>{% endfor %}
+  </select>
+  <button type="submit" class="btn small">Search</button>
+  {% if search or role %}<a href="{{ url_for('admin.roles') }}" class="btn small remove">Clear</a>{% endif %}
+</form>
+
+<div class="table-scroll">
+<table>
+  <thead><tr><th>Name</th><th>Username</th><th>Status</th><th>Current role</th><th>Change role</th></tr></thead>
+  <tbody>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.name }}</td>
+      <td>{{ u.username }}</td>
+      <td><span class="status-badge {{ u.status|lower }}">{{ u.status }}</span></td>
+      <td><span class="role-badge {{ u.role }}">{{ u.role }}</span></td>
+      <td>
+        <form method="POST" action="{{ url_for('admin.change_role', user_id=u.id) }}" class="inline-form"
+              onsubmit="return confirm('Change the role of {{ u.username }}?');">
+          {{ csrf_input() }}
+          <select name="role" class="compact">
+            {% for r in roles %}<option value="{{ r }}" {% if u.role == r %}selected{% endif %}>{{ r|capitalize }}</option>{% endfor %}
+          </select>
+          <button type="submit" class="btn small edit">Save</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="empty">No users match your filters.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+{% include "components/pagination.html" %}
+{% endblock %}
