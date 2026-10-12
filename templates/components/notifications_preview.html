@@ -1,0 +1,14 @@
+<h2 class="section-title">Recent notifications</h2>
+{% if notifications %}
+  <ul class="notice-list">
+    {% for n in notifications %}
+      <li class="{{ '' if n.is_read else 'unread' }}">
+        {% if n.link %}<a href="{{ n.link }}">{{ n.message }}</a>{% else %}{{ n.message }}{% endif %}
+        <small>{{ n.created_at[:16] }} UTC</small>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="empty">No notifications yet.</p>
+{% endif %}
+<div class="links"><a href="{{ url_for('user.notifications') }}">View all notifications &rarr;</a></div>
