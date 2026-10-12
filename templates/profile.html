@@ -1,47 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Profile - MyApp</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-{% include "components/navbar.html" %}
-<div class="page-wrap">
-<div class="card">
-  <h1 class="title">MyApp</h1>
-  <h2 class="subtitle">My Profile</h2>
-
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for category, message in messages %}
-        <div class="alert {{ category }}">{{ message }}</div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
+{% extends "app.html" %}
+{% block title %}My Profile - MyApp{% endblock %}
+{% block card_class %}{% endblock %}
+{% block content %}
+  <h1 class="title">My Profile</h1>
+  <h2 class="subtitle"><span class="role-badge {{ user.role }}">{{ ROLE_LABELS[user.role] }}</span></h2>
 
   <form method="POST" data-validate novalidate>
+    {{ csrf_input() }}
     <label for="name">Full Name</label>
-    <input type="text" id="name" name="name" value="{{ user.name }}" required>
+    <input type="text" id="name" name="name" value="{{ user.name }}" maxlength="100" required>
 
     <label>Username</label>
     <input type="text" value="{{ user.username }}" disabled>
 
     <label for="email">Email</label>
-    <input type="text" id="email" name="email" value="{{ user.email or '' }}" placeholder="user@example.com">
+    <input type="text" id="email" name="email" value="{{ user.email or '' }}" placeholder="user@example.com" maxlength="120">
 
     <label>Role</label>
     <input type="text" value="{{ user.role }}" disabled>
 
     <div class="field-error"></div>
-
     <button type="submit" class="btn">Save Changes</button>
   </form>
 
-  <p class="note">Need a new password? Use <a href="{{ url_for('auth.forgot_password') }}">Forgot Password</a>.</p>
-</div>
-</div>
-<script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
-</html>
+  <h2 class="section-title" style="margin-top:28px;">Change password</h2>
+  <form method="POST" action="{{ url_for('user.change_password') }}" data-validate novalidate>
+    {{ csrf_input() }}
+    <label for="current_password">Current password</label>
+    <div class="password-wrapper">
+      <input type="password" id="current_password" name="current_password" required>
+      <span class="toggle-password" data-target="current_password">Show</span>
+    </div>
+
+    <label for="new_password">New password</label>
+    <div class="password-wrapper">
+      <input type="password" id="new_password" name="new_password" placeholder="At least 6 characters" required>
+      <span class="toggle-password" data-target="new_password">Show</span>
+    </div>
+
+    <label for="confirm_password">Confirm new password</label>
+    <div class="password-wrapper">
+      <input type="password" id="confirm_password" name="confirm_password" required>
+      <span class="toggle-password" data-target="confirm_password">Show</span>
+    </div>
+
+    <div class="field-error"></div>
+    <button type="submit" class="btn">Change Password</button>
+  </form>
+{% endblock %}
