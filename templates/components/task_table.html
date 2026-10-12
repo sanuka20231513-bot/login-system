@@ -1,0 +1,76 @@
+{# One table for every task list. `mode` decides which action buttons a row
+   gets: admin | manager | assign | approve | officer. The buttons are only
+   convenience - each route re-checks permission on the server. #}
+<div class="table-scroll">
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Priority</th>
+      {% if mode != 'officer' %}<th>Assigned to</th>{% endif %}
+      <th>Due</th>
+      <th>Status</th>
+      <th>Progress</th>
+      {% if show_feedback %}<th>Manager feedback</th>{% endif %}
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for t in tasks %}
+    <tr>
+      <td><a href="{{ url_for('tasks.task_details', task_id=t.id) }}">{{ t.title }}</a></td>
+      <td><span class="priority-badge {{ t.priority|lower }}">{{ t.priority }}</span></td>
+      {% if mode != 'officer' %}<td>{{ t.assignee_name or 'Unassigned' }}</td>{% endif %}
+      <td>
+        {{ t.due_date or '-' }}
+        {% if t.overdue %}<span class="overdue-flag">Overdue</span>{% endif %}
+      </td>
+      <td><span class="status-badge {{ t.status|lower|replace(' ', '-') }}">{{ t.status }}</span></td>
+      <td>
+        <div class="progress"><span style="width: {{ t.progress }}%"></span></div>
+        <small>{{ t.progress }}%</small>
+      </td>
+      {% if show_feedback %}<td class="wrap-cell">{{ t.feedback or '-' }}</td>{% endif %}
+      <td class="actions">
+        <a href="{{ url_for('tasks.task_details', task_id=t.id) }}" class="btn small edit">View</a>
+
+        {% if mode == 'admin' %}
+          <a href="{{ url_for('admin.edit_task', task_id=t.id) }}" class="btn small approve">Edit</a>
+          <form method="POST" action="{{ url_for('admin.remove_task', task_id=t.id) }}"
+                onsubmit="return confirm('Permanently delete this task?');">
+            {{ csrf_input() }}
+            <button type="submit" class="btn small remove">Delete</button>
+          </form>
+
+        {% elif mode == 'manager' and t.status != 'Approved' %}
+          <a href="{{ url_for('manager.edit_task', task_id=t.id) }}" class="btn small approve">Edit</a>
+
+        {% elif mode == 'assign' %}
+          <form method="POST" action="{{ url_for('manager.assign', task_id=t.id) }}" class="inline-form">
+            {{ csrf_input() }}
+            <select name="officer_id" class="compact" required>
+              <option value="">Choose officer</option>
+              {% for o in officers %}
+                <option value="{{ o.id }}" {% if t.assigned_to == o.id %}selected{% endif %}>{{ o.name }}</option>
+              {% endfor %}
+            </select>
+            <button type="submit" class="btn small approve">Assign</button>
+          </form>
+
+        {% elif mode == 'approve' %}
+          <form method="POST" action="{{ url_for('manager.review', task_id=t.id) }}" class="inline-form">
+            {{ csrf_input() }}
+            <input type="text" name="feedback" class="compact" placeholder="Feedback (needed to reject)" maxlength="1000">
+            <button type="submit" name="decision" value="approve" class="btn small approve">Approve</button>
+            <button type="submit" name="decision" value="reject" class="btn small reject"
+                    onclick="return confirm('Send this work back for corrections?');">Reject</button>
+          </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="{{ 6 + (1 if mode != 'officer' else 0) + (1 if show_feedback else 0) }}" class="empty">No tasks to show.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
