@@ -1,0 +1,49 @@
+{% extends "app.html" %}
+{# Shared by Admin (system-wide, with user stats) and Manager (own tasks). #}
+{% block title %}{{ title }} - MyApp{% endblock %}
+{% block content %}
+<h1 class="title">{{ title }}</h1>
+<p class="note left">{{ scope_note }}</p>
+
+{% if user_stats %}
+<h2 class="section-title">Users</h2>
+<div class="stats-grid">
+  {% for s in user_statuses %}<div class="stat-card"><span class="stat-number">{{ user_stats.by_status.get(s, 0) }}</span><span class="stat-label">{{ s }}</span></div>{% endfor %}
+  {% for r in roles %}<div class="stat-card"><span class="stat-number">{{ user_stats.by_role.get(r, 0) }}</span><span class="stat-label">{{ r }}s</span></div>{% endfor %}
+</div>
+{% endif %}
+
+<h2 class="section-title">Tasks by status (total {{ counts.total }})</h2>
+<div class="stats-grid">
+  {% for s in ['Pending', 'In Progress', 'Submitted', 'Approved', 'Rejected'] %}
+    <div class="stat-card"><span class="stat-number">{{ counts.by_status[s] }}</span><span class="stat-label">{{ s }}</span></div>
+  {% endfor %}
+  <div class="stat-card"><span class="stat-number">{{ counts.overdue }}</span><span class="stat-label">Overdue</span></div>
+  <div class="stat-card"><span class="stat-number">{{ counts.unassigned }}</span><span class="stat-label">Unassigned</span></div>
+</div>
+
+<h2 class="section-title">Tasks by priority</h2>
+<div class="stats-grid">
+  {% for p in ['High', 'Medium', 'Low'] %}
+    <div class="stat-card"><span class="stat-number">{{ report.by_priority[p] }}</span><span class="stat-label">{{ p }}</span></div>
+  {% endfor %}
+</div>
+
+<h2 class="section-title">Work per officer</h2>
+<div class="table-scroll">
+<table>
+  <thead><tr><th>Officer</th><th>Total</th><th>Pending</th><th>In progress</th><th>Submitted</th><th>Approved</th><th>Rejected</th><th>Overdue</th></tr></thead>
+  <tbody>
+    {% for o in report.per_officer %}
+    <tr>
+      <td>{{ o.name }} <small>({{ o.username }})</small></td>
+      <td>{{ o.total }}</td><td>{{ o.pending }}</td><td>{{ o.in_progress }}</td>
+      <td>{{ o.submitted }}</td><td>{{ o.approved }}</td><td>{{ o.rejected }}</td><td>{{ o.overdue }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="8" class="empty">No assigned tasks yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}
