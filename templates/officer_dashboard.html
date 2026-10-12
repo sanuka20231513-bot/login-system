@@ -1,0 +1,38 @@
+{% extends "app.html" %}
+{% block title %}Officer Dashboard - MyApp{% endblock %}
+{% block content %}
+  <h1 class="title">Officer Dashboard</h1>
+  {% if viewing_as_admin %}
+    <p class="note">Viewing as Administrator (read-only): these figures cover every officer's tasks.</p>
+  {% else %}
+    <p class="note">Welcome, {{ current_user.name }}. These are the tasks assigned to you.</p>
+  {% endif %}
+
+  <div class="stats-grid">
+    <div class="stat-card"><span class="stat-number">{{ counts.by_status['Pending'] }}</span><span class="stat-label">Pending</span></div>
+    <div class="stat-card"><span class="stat-number">{{ counts.by_status['In Progress'] }}</span><span class="stat-label">In progress</span></div>
+    <div class="stat-card"><span class="stat-number">{{ counts.by_status['Rejected'] }}</span><span class="stat-label">Needs corrections</span></div>
+    <div class="stat-card"><span class="stat-number">{{ counts.by_status['Submitted'] }}</span><span class="stat-label">Submitted</span></div>
+    <div class="stat-card"><span class="stat-number">{{ counts.by_status['Approved'] }}</span><span class="stat-label">Approved</span></div>
+    <div class="stat-card"><span class="stat-number">{{ counts.overdue }}</span><span class="stat-label">Overdue</span></div>
+  </div>
+
+  <h2 class="section-title">Tasks to work on</h2>
+  {% if open_tasks %}
+    <ul class="notice-list">
+      {% for t in open_tasks %}
+        <li><a href="{{ url_for('tasks.task_details', task_id=t.id) }}">{{ t.title }}</a>
+            <span class="status-badge {{ t.status|lower|replace(' ', '-') }}">{{ t.status }}</span>
+            <span class="priority-badge {{ t.priority|lower }}">{{ t.priority }}</span>
+            <small>due {{ t.due_date or '-' }}{% if t.overdue %} &middot; <span class="overdue-flag">Overdue</span>{% endif %}</small></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty">You have no open tasks right now.</p>
+  {% endif %}
+  {% if not viewing_as_admin %}
+    <div class="links"><a href="{{ url_for('officer.my_tasks') }}">Go to My Tasks &rarr;</a></div>
+  {% endif %}
+
+  {% include "components/notifications_preview.html" %}
+{% endblock %}
