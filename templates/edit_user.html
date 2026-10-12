@@ -1,54 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edit User - MyApp Admin</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-{% include "components/navbar.html" %}
-<div class="page-wrap">
-<div class="card">
-  <h1 class="title">MyApp Admin</h1>
-  <h2 class="subtitle">Edit User Details</h2>
-
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for category, message in messages %}
-        <div class="alert {{ category }}">{{ message }}</div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
+{% extends "app.html" %}
+{% block title %}Edit User - MyApp Admin{% endblock %}
+{% block card_class %}{% endblock %}
+{% block content %}
+  <h1 class="title">Edit User</h1>
+  <h2 class="subtitle">Status: <span class="status-badge {{ user.status|lower }}">{{ user.status }}</span> &middot; created {{ user.created_at[:10] }}</h2>
 
   <form method="POST" data-validate novalidate>
+    {{ csrf_input() }}
     <label for="name">Full Name</label>
-    <input type="text" id="name" name="name" value="{{ user.name }}" required>
+    <input type="text" id="name" name="name" value="{{ user.name }}" maxlength="100" required>
 
     <label for="username">Username</label>
-    <input type="text" id="username" name="username" value="{{ user.username }}" required>
+    <input type="text" id="username" name="username" value="{{ user.username }}" maxlength="30" required>
 
     <label for="email">Email</label>
-    <input type="text" id="email" name="email" value="{{ user.email or '' }}" placeholder="user@example.com">
+    <input type="text" id="email" name="email" value="{{ user.email or '' }}" placeholder="user@example.com" maxlength="120">
 
     <label for="role">Role</label>
     <select id="role" name="role">
-      <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
-      <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+      {% for r in roles %}<option value="{{ r }}" {% if user.role == r %}selected{% endif %}>{{ r|capitalize }}</option>{% endfor %}
     </select>
 
-    <p class="note">Status: <strong>{{ user.status }}</strong> &mdash; change status from User Management.</p>
+    <label for="new_password">Set a new password (optional)</label>
+    <div class="password-wrapper">
+      <input type="password" id="new_password" name="new_password" placeholder="Leave blank to keep the current one">
+      <span class="toggle-password" data-target="new_password">Show</span>
+    </div>
+
+    <p class="note">Change status (approve / reject / enable / disable) from User Management.</p>
 
     <div class="field-error"></div>
-
     <button type="submit" class="btn">Save Changes</button>
   </form>
 
-  <div class="links">
-    <a href="{{ url_for('admin.users_list') }}">&larr; Back to User Management</a>
-  </div>
-</div>
-</div>
-<script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
-</html>
+  <div class="links"><a href="{{ url_for('admin.users_list') }}">&larr; Back to User Management</a></div>
+{% endblock %}
