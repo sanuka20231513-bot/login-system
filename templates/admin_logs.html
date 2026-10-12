@@ -1,0 +1,38 @@
+{% extends "app.html" %}
+{% block title %}Activity Logs - MyApp Admin{% endblock %}
+{% block content %}
+<h1 class="title">Activity Logs</h1>
+<p class="note left">Logins, failed logins, access-denied attempts and every administrative action. Times are in UTC.</p>
+
+<form method="GET" class="filter-bar">
+  <input type="text" name="search" placeholder="Search user, action or details" value="{{ search }}">
+  <select name="action" title="Action">
+    <option value="">All actions</option>
+    {% for a in actions %}<option value="{{ a }}" {% if action == a %}selected{% endif %}>{{ a }}</option>{% endfor %}
+  </select>
+  <label class="inline-label">From <input type="date" name="date_from" value="{{ date_from }}"></label>
+  <label class="inline-label">to <input type="date" name="date_to" value="{{ date_to }}"></label>
+  <button type="submit" class="btn small">Filter</button>
+  {% if search or action or date_from or date_to %}<a href="{{ url_for('admin.logs') }}" class="btn small remove">Clear</a>{% endif %}
+</form>
+
+<div class="table-scroll">
+<table>
+  <thead><tr><th>Time (UTC)</th><th>User</th><th>Action</th><th>Details</th></tr></thead>
+  <tbody>
+    {% for e in entries %}
+    <tr>
+      <td>{{ e.created_at }}</td>
+      <td>{{ e.actor_name }}</td>
+      <td><span class="log-action">{{ e.action }}</span></td>
+      <td class="wrap-cell">{{ e.details }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="empty">No log entries match.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+{% include "components/pagination.html" %}
+{% endblock %}
