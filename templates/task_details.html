@@ -1,0 +1,90 @@
+{% extends "app.html" %}
+{# Details of ONE task. The route has already checked that this user is
+   allowed to see it, and decided which action panels apply. #}
+{% block title %}{{ task.title }} - MyApp{% endblock %}
+{% block content %}
+<div class="panel-header">
+  <h1 class="title">{{ task.title }}</h1>
+  <span class="status-badge {{ task.status|lower|replace(' ', '-') }}">{{ task.status }}</span>
+</div>
+
+<dl class="detail-grid">
+  <div><dt>Priority</dt><dd><span class="priority-badge {{ task.priority|lower }}">{{ task.priority }}</span></dd></div>
+  <div><dt>Due date</dt><dd>{{ task.due_date or '-' }}{% if task.overdue %} <span class="overdue-flag">Overdue</span>{% endif %}</dd></div>
+  <div><dt>Created by</dt><dd>{{ task.creator_name }}</dd></div>
+  <div><dt>Assigned to</dt><dd>{{ task.assignee_name or 'Unassigned' }}</dd></div>
+  <div><dt>Created</dt><dd>{{ task.created_at[:16] }} UTC</dd></div>
+  <div><dt>Last updated</dt><dd>{{ task.updated_at[:16] }} UTC</dd></div>
+  <div class="wide-cell"><dt>Progress</dt>
+    <dd><div class="progress"><span style="width: {{ task.progress }}%"></span></div> {{ task.progress }}%</dd></div>
+</dl>
+
+<h2 class="section-title">Description</h2>
+<p class="body-text">{{ task.description or 'No description.' }}</p>
+
+{% if task.progress_note %}
+  <h2 class="section-title">Latest progress note</h2>
+  <p class="body-text">{{ task.progress_note }}</p>
+{% endif %}
+{% if task.submission_note or task.submitted_at %}
+  <h2 class="section-title">Submitted work</h2>
+  <p class="body-text">{{ task.submission_note or 'No note.' }}
+    {% if task.submitted_at %}<small>(submitted {{ task.submitted_at[:16] }} UTC)</small>{% endif %}</p>
+{% endif %}
+{% if task.feedback %}
+  <h2 class="section-title">Manager feedback</h2>
+  <p class="body-text feedback-box">{{ task.feedback }}
+    {% if task.reviewed_at %}<small>({{ task.reviewed_at[:16] }} UTC)</small>{% endif %}</p>
+{% endif %}
+
+{# ---------------- Officer: update progress / submit ---------------- #}
+{% if can_update_progress %}
+<h2 class="section-title">Update progress</h2>
+<form method="POST" action="{{ url_for('officer.update_progress', task_id=task.id) }}" data-validate novalidate>
+  {{ csrf_input() }}
+  <label for="progress">Progress (0-100%)</label>
+  <input type="number" id="progress" name="progress" min="0" max="100" value="{{ task.progress if task.progress < 100 else 90 }}" required>
+  <label for="note">Note (optional)</label>
+  <textarea id="note" name="note" rows="2" maxlength="1000">{{ task.progress_note or '' }}</textarea>
+  <div class="field-error"></div>
+  <button type="submit" class="btn">Save progress</button>
+</form>
+{% endif %}
+
+{% if can_submit %}
+<h2 class="section-title">Submit for review</h2>
+<form method="POST" action="{{ url_for('officer.submit', task_id=task.id) }}"
+      onsubmit="return confirm('Submit this work to your manager for review?');">
+  {{ csrf_input() }}
+  <label for="submit_note">Message to your manager (optional)</label>
+  <textarea id="submit_note" name="note" rows="2" maxlength="1000"></textarea>
+  <button type="submit" class="btn approve-btn">Submit completed work</button>
+</form>
+{% endif %}
+
+{# ---------------- Manager / admin: review ---------------- #}
+{% if can_review %}
+<h2 class="section-title">Review this submission</h2>
+<form method="POST" action="{{ url_for('manager.review', task_id=task.id) }}">
+  {{ csrf_input() }}
+  <label for="feedback">Feedback (required when rejecting)</label>
+  <textarea id="feedback" name="feedback" rows="3" maxlength="1000"></textarea>
+  <div class="actions">
+    <button type="submit" name="decision" value="approve" class="btn small approve">Approve</button>
+    <button type="submit" name="decision" value="reject" class="btn small reject"
+            onclick="return confirm('Send this work back for corrections?');">Reject</button>
+  </div>
+</form>
+{% endif %}
+
+<div class="links">
+  <a href="{{ url_for('user.dashboard') }}">&larr; Back to dashboard</a>
+  {% if can_edit %}
+    {% if current_user.role == 'admin' %}
+      <a href="{{ url_for('admin.edit_task', task_id=task.id) }}">Edit task</a>
+    {% else %}
+      <a href="{{ url_for('manager.edit_task', task_id=task.id) }}">Edit task</a>
+    {% endif %}
+  {% endif %}
+</div>
+{% endblock %}
