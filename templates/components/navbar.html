@@ -1,12 +1,36 @@
 <nav class="navbar">
-  <a class="navbar-brand" href="{{ url_for('user.dashboard') }}">MyApp</a>
+  <a class="navbar-brand" href="{{ url_for('user.dashboard') }}">MyApp
+    {% if current_user %}<span class="role-badge {{ current_user.role }}">{{ ROLE_LABELS[current_user.role] }}</span>{% endif %}
+  </a>
   <div class="navbar-links">
-    <a href="{{ url_for('user.dashboard') }}">Dashboard</a>
-    <a href="{{ url_for('user.profile') }}">Profile</a>
+    {# Each role only sees links it is allowed to open. This is convenience -
+       the real protection is the @role_required check on every route. #}
     {% if current_user and current_user.role == 'admin' %}
       <a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
       <a href="{{ url_for('admin.users_list') }}">User Management</a>
+      <a href="{{ url_for('admin.roles') }}">Role Management</a>
+      <a href="{{ url_for('admin.tasks_list') }}">Task Management</a>
+      <a href="{{ url_for('admin.reports') }}">Reports</a>
+      <a href="{{ url_for('admin.logs') }}">Activity Logs</a>
+      <a href="{{ url_for('admin.settings') }}">Settings</a>
+    {% elif current_user and current_user.role == 'manager' %}
+      <a href="{{ url_for('manager.dashboard') }}">Manager Dashboard</a>
+      <a href="{{ url_for('manager.officers') }}">Officer Work Overview</a>
+      <a href="{{ url_for('manager.tasks') }}">Task Management</a>
+      <a href="{{ url_for('manager.assignments') }}">Task Assignments</a>
+      <a href="{{ url_for('manager.approvals') }}">Work Approvals</a>
+      <a href="{{ url_for('manager.reports') }}">Reports</a>
+    {% elif current_user and current_user.role == 'officer' %}
+      <a href="{{ url_for('officer.dashboard') }}">Officer Dashboard</a>
+      <a href="{{ url_for('officer.my_tasks') }}">My Tasks</a>
+      <a href="{{ url_for('officer.submitted') }}">Submitted Work</a>
+      <a href="{{ url_for('officer.feedback') }}">Feedback</a>
+      <a href="{{ url_for('officer.history') }}">Task History</a>
     {% endif %}
-    <a href="{{ url_for('auth.logout') }}">Logout</a>
+    {% if current_user %}
+      <a href="{{ url_for('user.notifications') }}">Notifications{% if unread_notifications %} <span class="nav-badge">{{ unread_notifications }}</span>{% endif %}</a>
+      <a href="{{ url_for('user.profile') }}">Profile</a>
+      <a href="{{ url_for('auth.logout') }}">Logout</a>
+    {% endif %}
   </div>
 </nav>
