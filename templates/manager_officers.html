@@ -1,0 +1,61 @@
+{% extends "app.html" %}
+{% block title %}Officer Work Overview - MyApp{% endblock %}
+{% block content %}
+<h1 class="title">Officer Work Overview</h1>
+<p class="note left">
+  Task counts are for tasks <strong>you</strong> created.
+  {% if policy_on %}An administrator has allowed managers to approve, reject, disable and enable officer accounts.
+  {% else %}Officer account management is turned off (an administrator can enable it in Settings).{% endif %}
+</p>
+
+<form method="GET" class="filter-bar">
+  <input type="text" name="search" placeholder="Search officer name or username" value="{{ search }}">
+  {% if policy_on %}
+  <select name="status" title="Account status">
+    <option value="">All statuses</option>
+    {% for s in statuses %}<option value="{{ s }}" {% if status == s %}selected{% endif %}>{{ s }}</option>{% endfor %}
+  </select>
+  {% endif %}
+  <button type="submit" class="btn small">Search</button>
+  {% if search or status %}<a href="{{ url_for('manager.officers') }}" class="btn small remove">Clear</a>{% endif %}
+</form>
+
+<div class="table-scroll">
+<table>
+  <thead>
+    <tr><th>Officer</th>{% if policy_on %}<th>Account</th>{% endif %}
+        <th>Total</th><th>Pending</th><th>In progress</th><th>Submitted</th><th>Approved</th><th>Rejected</th>
+        {% if policy_on %}<th>Manage</th>{% endif %}</tr>
+  </thead>
+  <tbody>
+    {% for o in officers %}
+    <tr>
+      <td>{{ o.name }} <small>({{ o.username }})</small></td>
+      {% if policy_on %}<td><span class="status-badge {{ o.status|lower }}">{{ o.status }}</span></td>{% endif %}
+      <td>{{ o.total }}</td><td>{{ o.pending }}</td><td>{{ o.in_progress }}</td>
+      <td>{{ o.submitted }}</td><td>{{ o.approved }}</td><td>{{ o.rejected }}</td>
+      {% if policy_on %}
+      <td class="actions">
+        {% for action, label, css in (
+             [('approve', 'Approve', 'approve'), ('reject', 'Reject', 'reject')] if o.status == 'Pending' else
+             [('disable', 'Disable', 'reject')] if o.status == 'Approved' else
+             [('enable', 'Enable', 'approve')]) %}
+          <form method="POST" action="{{ url_for('manager.officer_status', user_id=o.id) }}"
+                {% if action in ('reject', 'disable') %}onsubmit="return confirm('{{ label }} this officer?');"{% endif %}>
+            {{ csrf_input() }}
+            <input type="hidden" name="action" value="{{ action }}">
+            <button type="submit" class="btn small {{ css }}">{{ label }}</button>
+          </form>
+        {% endfor %}
+      </td>
+      {% endif %}
+    </tr>
+    {% else %}
+    <tr><td colspan="9" class="empty">No officers found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+{% include "components/pagination.html" %}
+{% endblock %}
