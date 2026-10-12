@@ -1,0 +1,51 @@
+{% extends "app.html" %}
+{% block title %}Manager Dashboard - MyApp{% endblock %}
+{% block content %}
+  <h1 class="title">Manager Dashboard</h1>
+  {% if viewing_as_admin %}
+    <p class="note">Viewing as Administrator: these figures cover every manager's tasks.</p>
+  {% else %}
+    <p class="note">Welcome, {{ current_user.name }}. Figures cover the tasks you created.</p>
+  {% endif %}
+
+  <div class="stats-grid">
+    <div class="stat-card"><span class="stat-number">{{ counts.total }}</span><span class="stat-label">Total tasks</span></div>
+    <div class="stat-card"><span class="stat-number">{{ counts.by_status['Pending'] }}</span><span class="stat-label">Pending</span></div>
+    <div class="stat-card"><span class="stat-number">{{ counts.by_status['In Progress'] }}</span><span class="stat-label">In progress</span></div>
+    <div class="stat-card highlight"><span class="stat-number">{{ counts.by_status['Submitted'] }}</span><span class="stat-label">Awaiting review</span></div>
+    <div class="stat-card"><span class="stat-number">{{ counts.by_status['Approved'] }}</span><span class="stat-label">Approved</span></div>
+    <div class="stat-card"><span class="stat-number">{{ counts.by_status['Rejected'] }}</span><span class="stat-label">Rejected</span></div>
+    <div class="stat-card"><span class="stat-number">{{ counts.overdue }}</span><span class="stat-label">Overdue</span></div>
+    <div class="stat-card"><span class="stat-number">{{ counts.unassigned }}</span><span class="stat-label">Unassigned</span></div>
+  </div>
+
+  <h2 class="section-title">Work waiting for your review</h2>
+  {% if awaiting_review %}
+    <ul class="notice-list">
+      {% for t in awaiting_review %}
+        <li><a href="{{ url_for('tasks.task_details', task_id=t.id) }}">{{ t.title }}</a>
+            <small>by {{ t.assignee_name or 'n/a' }} &middot; submitted {{ (t.submitted_at or '')[:16] }} UTC</small></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty">Nothing is waiting for review.</p>
+  {% endif %}
+  {% if not viewing_as_admin %}
+    <div class="links"><a href="{{ url_for('manager.approvals') }}">Go to Work Approvals &rarr;</a></div>
+  {% endif %}
+
+  <h2 class="section-title">Recently updated tasks</h2>
+  {% if recent %}
+    <ul class="notice-list">
+      {% for t in recent %}
+        <li><a href="{{ url_for('tasks.task_details', task_id=t.id) }}">{{ t.title }}</a>
+            <span class="status-badge {{ t.status|lower|replace(' ', '-') }}">{{ t.status }}</span>
+            <small>{{ t.assignee_name or 'Unassigned' }}</small></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty">No tasks yet.{% if not viewing_as_admin %} <a href="{{ url_for('manager.new_task') }}">Create the first one.</a>{% endif %}</p>
+  {% endif %}
+
+  {% include "components/notifications_preview.html" %}
+{% endblock %}
