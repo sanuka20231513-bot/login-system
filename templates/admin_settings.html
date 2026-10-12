@@ -1,0 +1,18 @@
+{% extends "app.html" %}
+{% block title %}Settings - MyApp Admin{% endblock %}
+{% block card_class %}{% endblock %}
+{% block content %}
+  <h1 class="title">System Settings</h1>
+  <br>
+  <form method="POST">
+    {{ csrf_input() }}
+    <label class="check-row">
+      <input type="checkbox" name="manager_can_manage_officers" {% if manager_can_manage_officers %}checked{% endif %}>
+      <span><strong>Managers can manage officer accounts</strong><br>
+        <small>When on, managers can approve, reject, disable and enable <em>officer</em> accounts from the
+        Officer Work Overview page. They can never change roles, and can never touch admin or manager accounts.
+        Default: off.</small></span>
+    </label>
+    <button type="submit" class="btn">Save Settings</button>
+  </form>
+{% endblock %}
