@@ -1,38 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard - MyApp</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-{% include "components/navbar.html" %}
-<div class="page-wrap">
-<div class="card wide">
+{% extends "app.html" %}
+{% block title %}Admin Dashboard - MyApp{% endblock %}
+{% block content %}
   <h1 class="title">Admin Dashboard</h1>
+  <p class="note">Welcome, {{ current_user.name }}. Full system overview.</p>
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for category, message in messages %}
-        <div class="alert {{ category }}">{{ message }}</div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
-
+  <h2 class="section-title">Users ({{ total_users }})</h2>
   <div class="stats-grid">
-    <div class="stat-card"><span class="stat-number">{{ counts.total }}</span><span class="stat-label">Total Users</span></div>
-    <div class="stat-card"><span class="stat-number">{{ counts.pending }}</span><span class="stat-label">Pending</span></div>
-    <div class="stat-card"><span class="stat-number">{{ counts.approved }}</span><span class="stat-label">Approved</span></div>
-    <div class="stat-card"><span class="stat-number">{{ counts.rejected }}</span><span class="stat-label">Rejected</span></div>
-    <div class="stat-card"><span class="stat-number">{{ counts.disabled }}</span><span class="stat-label">Disabled</span></div>
-    <div class="stat-card"><span class="stat-number">{{ counts.admins }}</span><span class="stat-label">Admins</span></div>
+    {% for s in ['Pending', 'Approved', 'Rejected', 'Disabled'] %}
+      <a class="stat-card" href="{{ url_for('admin.users_list', status=s) }}"><span class="stat-number">{{ users_by_status.get(s, 0) }}</span><span class="stat-label">{{ s }}</span></a>
+    {% endfor %}
+    {% for r in ['admin', 'manager', 'officer'] %}
+      <a class="stat-card" href="{{ url_for('admin.users_list', role=r) }}"><span class="stat-number">{{ users_by_role.get(r, 0) }}</span><span class="stat-label">{{ r }}s</span></a>
+    {% endfor %}
   </div>
 
-  <div class="links" style="margin-top:24px;">
-    <a href="{{ url_for('admin.users_list') }}">Go to User Management &rarr;</a>
+  <h2 class="section-title">Tasks ({{ counts.total }})</h2>
+  <div class="stats-grid">
+    {% for s in ['Pending', 'In Progress', 'Submitted', 'Approved', 'Rejected'] %}
+      <a class="stat-card" href="{{ url_for('admin.tasks_list', status=s) }}"><span class="stat-number">{{ counts.by_status[s] }}</span><span class="stat-label">{{ s }}</span></a>
+    {% endfor %}
+    <div class="stat-card"><span class="stat-number">{{ counts.overdue }}</span><span class="stat-label">Overdue</span></div>
+    <a class="stat-card" href="{{ url_for('admin.tasks_list', assigned='unassigned') }}"><span class="stat-number">{{ counts.unassigned }}</span><span class="stat-label">Unassigned</span></a>
   </div>
-</div>
-</div>
-</body>
-</html>
+
+  <h2 class="section-title">Other dashboards</h2>
+  <div class="links" style="justify-content:flex-start; gap:20px;">
+    <a href="{{ url_for('manager.dashboard') }}">Manager Dashboard &rarr;</a>
+    <a href="{{ url_for('officer.dashboard') }}">Officer Dashboard &rarr;</a>
+  </div>
+
+  <h2 class="section-title">Recent activity</h2>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Time (UTC)</th><th>User</th><th>Action</th><th>Details</th></tr></thead>
+    <tbody>
+      {% for e in recent_logs %}
+      <tr><td>{{ e.created_at[:16] }}</td><td>{{ e.actor_name }}</td><td>{{ e.action }}</td><td class="wrap-cell">{{ e.details }}</td></tr>
+      {% else %}
+      <tr><td colspan="4" class="empty">No activity yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <div class="links"><a href="{{ url_for('admin.logs') }}">View all activity logs &rarr;</a></div>
+{% endblock %}
