@@ -1,0 +1,40 @@
+{# Search + filters for task lists. Plain GET form, so the filters live in the
+   URL and pagination links keep them. Needs: filters, show_status_filter,
+   and optionally officers (adds the "assigned officer" filter). #}
+<form method="GET" class="filter-bar">
+  <input type="text" name="search" placeholder="Search title or description" value="{{ filters.search }}">
+
+  {% if show_status_filter %}
+  <select name="status" title="Status">
+    <option value="">All statuses</option>
+    {% for s in ['Pending', 'In Progress', 'Submitted', 'Approved', 'Rejected'] %}
+      <option value="{{ s }}" {% if filters.status == s %}selected{% endif %}>{{ s }}</option>
+    {% endfor %}
+  </select>
+  {% endif %}
+
+  <select name="priority" title="Priority">
+    <option value="">All priorities</option>
+    {% for p in ['High', 'Medium', 'Low'] %}
+      <option value="{{ p }}" {% if filters.priority == p %}selected{% endif %}>{{ p }}</option>
+    {% endfor %}
+  </select>
+
+  {% if officers is defined and mode != 'officer' %}
+  <select name="assigned" title="Assigned officer">
+    <option value="">All officers</option>
+    <option value="unassigned" {% if filters.assigned == 'unassigned' %}selected{% endif %}>Unassigned</option>
+    {% for o in officers %}
+      <option value="{{ o.id }}" {% if filters.assigned == o.id|string %}selected{% endif %}>{{ o.name }}</option>
+    {% endfor %}
+  </select>
+  {% endif %}
+
+  <label class="inline-label">Due from <input type="date" name="date_from" value="{{ filters.date_from }}"></label>
+  <label class="inline-label">to <input type="date" name="date_to" value="{{ filters.date_to }}"></label>
+
+  <button type="submit" class="btn small">Filter</button>
+  {% if filters.search or filters.status or filters.priority or filters.assigned or filters.date_from or filters.date_to %}
+    <a href="{{ url_for(request.endpoint) }}" class="btn small remove">Clear</a>
+  {% endif %}
+</form>
