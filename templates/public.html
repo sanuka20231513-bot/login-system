@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{# Layout for pages a logged-out visitor can see: a centered card, no navbar. #}
+{% block body %}
+<div class="center-wrap">
+<div class="card">
+  {% block content %}{% endblock %}
+</div>
+</div>
+{% endblock %}
