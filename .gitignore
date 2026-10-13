@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 .venv/
 users.db
+secret_key.txt
