@@ -1,14 +1,16 @@
-
 import math
 
 
-def paginate(conn, base_query, count_query, params, page, per_page):
-    total = conn.execute(count_query, params).fetchone()[0]
+def paginate(conn, base_query, count_query, params, page, per_page, count_params=None):
+    """`count_params` is only needed when the COUNT query takes different
+    parameters from the main query (e.g. the main query has extra JOIN
+    parameters)."""
+    total = conn.execute(count_query, params if count_params is None else count_params).fetchone()[0]
     total_pages = max(1, math.ceil(total / per_page)) if per_page else 1
     page = max(1, min(page, total_pages))
     offset = (page - 1) * per_page
 
-    rows = conn.execute(base_query + " LIMIT ? OFFSET ?", params + (per_page, offset)).fetchall()
+    rows = conn.execute(base_query + " LIMIT ? OFFSET ?", tuple(params) + (per_page, offset)).fetchall()
 
     start = 0 if total == 0 else offset + 1
     end = min(offset + per_page, total)
